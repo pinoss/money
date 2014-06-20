@@ -10,6 +10,9 @@
  - Performance Improvements (1.99x faster on MRI, 1.85x on Rubinius, 41.4x faster on JRuby)
  - Money can now add and subtract Fixnum 0
 
+## 6.1.2
+ - Fix issue with arithmetic operations on Money instances if bank is different than default
+
 ## 6.1.1
  - Remove lingering Monetize call
 

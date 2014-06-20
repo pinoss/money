@@ -167,8 +167,8 @@ class Money
   #   n = Money.ca_dollar(100)
   #   n.cents    #=> 100
   #   n.currency #=> #<Money::Currency id: cad>
-  def self.ca_dollar(cents)
-    Money.new(cents, "CAD")
+  def self.ca_dollar(cents, bank = Money.default_bank)
+    Money.new(cents, "CAD", bank)
   end
 
   # Creates a new Money object of the given value, using the American dollar
@@ -182,8 +182,8 @@ class Money
   #   n = Money.us_dollar(100)
   #   n.cents    #=> 100
   #   n.currency #=> #<Money::Currency id: usd>
-  def self.us_dollar(cents)
-    Money.new(cents, "USD")
+  def self.us_dollar(cents, bank = Money.default_bank)
+    Money.new(cents, "USD", bank)
   end
 
   # Creates a new Money object of the given value, using the Euro currency.
@@ -196,8 +196,8 @@ class Money
   #   n = Money.euro(100)
   #   n.cents    #=> 100
   #   n.currency #=> #<Money::Currency id: eur>
-  def self.euro(cents)
-    Money.new(cents, "EUR")
+  def self.euro(cents, bank = Money.default_bank)
+    Money.new(cents, "EUR", bank)
   end
 
   # Adds a new exchange rate to the default bank and return the rate.
@@ -480,7 +480,7 @@ class Money
       left_over.to_i.times { |i| amounts[i % amounts.length] += 1 }
     end
 
-    amounts.collect { |fractional| Money.new(fractional, currency) }
+    amounts.collect { |fractional| Money.new(fractional, currency, bank) }
   end
 
   # Split money amongst parties evenly without loosing pennies.
@@ -518,7 +518,7 @@ class Money
   #
   def round(rounding_mode = self.class.rounding_mode)
     if self.class.infinite_precision
-      Money.new(fractional.round(0, rounding_mode), self.currency)
+      Money.new(fractional.round(0, rounding_mode), self.currency, self.bank)
     else
       self
     end
@@ -588,8 +588,8 @@ class Money
   end
 
   def split_flat(num)
-    low = Money.new(fractional / num, currency)
-    high = Money.new(low.fractional + 1, currency)
+    low = Money.new(fractional / num, currency, bank)
+    high = Money.new(low.fractional + 1, currency, bank)
 
     remainder = fractional % num
 
